@@ -1,4 +1,4 @@
-# 🏥 Hospital Management System Database (CSE384)
+# 🏥 Hospital Management System Database 
 
 A comprehensive Oracle SQL and PL/SQL database project designed to manage hospital operations, patient records, doctor allocations, and medical workflows.
 
