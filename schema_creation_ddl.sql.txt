@@ -1,0 +1,96 @@
+SET PAGESIZE 100;
+SET LINESIZE 1000;
+
+-- 1. Department Table
+CREATE TABLE Department (
+    dept_id NUMBER(10) PRIMARY KEY,
+    dept_name VARCHAR2(50),
+    building VARCHAR2(50),
+    location VARCHAR2(30),
+    contact_email VARCHAR2(50),
+    head_id NUMBER(5)
+);
+-- 2. Doctor Table
+CREATE TABLE Doctor (
+    doc_id NUMBER(5) PRIMARY KEY,
+    doc_name VARCHAR2(50),
+    salary NUMBER(8,2),
+    dept_id NUMBER(10),
+    CONSTRAINT fk_doc_dept FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
+);
+
+-- 3. Room Table
+CREATE TABLE ROOM (
+    room_id NUMBER(5) PRIMARY KEY,
+    room_num VARCHAR2(10),
+    room_type VARCHAR2(20),
+    capacity NUMBER(3),
+    dept_id NUMBER(10),
+    CONSTRAINT fk_room_dept FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
+);
+
+-- 4. Patient Table
+CREATE TABLE Patient (
+    patient_id NUMBER(5) PRIMARY KEY,
+    patient_name VARCHAR2(50),
+    email VARCHAR2(50),
+    age NUMBER(3),
+    dept_id NUMBER(10),
+    room_id NUMBER(5),
+    CONSTRAINT fk_pat_dept FOREIGN KEY (dept_id) REFERENCES Department(dept_id),
+    CONSTRAINT fk_pat_room FOREIGN KEY (room_id) REFERENCES ROOM(room_id)
+);
+
+-- 5. Archived_Patient Table
+CREATE TABLE Archived_Patient (
+    patient_id NUMBER(5) PRIMARY KEY,
+    patient_name VARCHAR2(50),
+    email VARCHAR2(50),
+    age NUMBER(3),
+    dept_id NUMBER(10),
+    room_id NUMBER(5)
+);
+
+-- 6. Appointment Table
+CREATE TABLE Appointment (
+    app_id NUMBER(5) PRIMARY KEY,
+    app_date DATE,
+    time_slot VARCHAR2(20),
+    fee NUMBER(6,2),
+    patient_id NUMBER(5),
+    doc_id NUMBER(5),
+    CONSTRAINT fk_app_pat FOREIGN KEY (patient_id) REFERENCES Patient(patient_id),
+    CONSTRAINT fk_app_doc FOREIGN KEY (doc_id) REFERENCES Doctor(doc_id)
+);
+
+-- 7. Medical Service Table
+CREATE TABLE Medical_Service (
+    service_id NUMBER(5) PRIMARY KEY,
+    service_code VARCHAR2(20),
+    service_name VARCHAR2(50),
+    service_cost NUMBER(8,2),
+    dept_id NUMBER(10),
+    room_id NUMBER(5),
+    CONSTRAINT fk_ms_dept FOREIGN KEY (dept_id) REFERENCES Department(dept_id),
+    CONSTRAINT fk_ms_room FOREIGN KEY (room_id) REFERENCES ROOM(room_id)
+);
+
+-- 8. DocServi Table (Junction Table)
+CREATE TABLE DocServi (
+    doc_id NUMBER(5),
+    service_id NUMBER(5),
+    status VARCHAR2(20),
+    assigned_date DATE,
+    PRIMARY KEY (doc_id, service_id),
+    CONSTRAINT fk_ds_doc FOREIGN KEY (doc_id) REFERENCES Doctor(doc_id),
+    CONSTRAINT fk_ds_serv FOREIGN KEY (service_id) REFERENCES Medical_Service(service_id)
+);
+
+-- Table Alteration & Drop Tests 
+ALTER TABLE Doctor ADD temp_col VARCHAR2(20);
+ALTER TABLE Doctor MODIFY temp_col VARCHAR2(30);
+ALTER TABLE Doctor RENAME COLUMN temp_col TO temp_note;
+ALTER TABLE Doctor DROP COLUMN temp_note;
+
+CREATE TABLE Temp_Table (id NUMBER);
+DROP TABLE Temp_Table;
