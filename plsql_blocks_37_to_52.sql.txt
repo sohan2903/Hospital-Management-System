@@ -1,0 +1,162 @@
+-- 37. Print a simple message using PL/SQL block
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Welcome to Hospital Management System');
+END;
+/
+
+-- 38. Declare variables and print values in PL/SQL
+DECLARE
+    v_doc_name VARCHAR2(30);
+    v_fee NUMBER(5) := 1000;
+BEGIN
+    v_doc_name := 'Dr. Amit';
+    DBMS_OUTPUT.PUT_LINE('Doctor: ' || v_doc_name);
+    DBMS_OUTPUT.PUT_LINE('Fee: ' || v_fee);
+END;
+/
+
+-- 39. Copy column data type to a variable using %TYPE
+DECLARE
+    v_name Doctor.doc_name%TYPE;
+    v_sal Doctor.salary%TYPE;
+BEGIN
+    SELECT doc_name, salary INTO v_name, v_sal FROM Doctor WHERE doc_id = 101;
+    DBMS_OUTPUT.PUT_LINE('Doctor: ' || v_name || ' | Salary: ' || v_sal);
+END;
+/
+
+-- 40. Fetch an entire row into a variable using %ROWTYPE
+DECLARE
+    doc_rec Doctor%ROWTYPE;
+BEGIN
+    SELECT * INTO doc_rec FROM Doctor WHERE doc_id = 101;
+    DBMS_OUTPUT.PUT_LINE('Doctor: ' || doc_rec.doc_name || ' | Dept: ' || doc_rec.dept_id);
+END;
+/
+
+-- 41. Use IF-ELSIF-ELSE conditions in PL/SQL
+DECLARE
+    v_salary NUMBER := 75000;
+BEGIN
+    IF v_salary >= 80000 THEN
+        DBMS_OUTPUT.PUT_LINE('Category: Senior Specialist');
+    ELSIF v_salary >= 60000 THEN
+        DBMS_OUTPUT.PUT_LINE('Category: Mid-Level Specialist');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Category: Junior Doctor');
+    END IF;
+END;
+/
+
+-- 42. Store values using VARRAY (fixed size array) in PL/SQL
+DECLARE
+    TYPE doc_list IS VARRAY(3) OF VARCHAR2(50);
+    docs doc_list := doc_list('Dr. Amit', 'Dr. Rahul', 'Dr. Vijay');
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('First Doctor: ' || docs(1));
+END;
+/
+
+-- 43. Store values using Associative Array (Index-By Table) in PL/SQL
+DECLARE
+    TYPE dept_table IS TABLE OF VARCHAR2(30) INDEX BY PLS_INTEGER;
+    depts dept_table;
+BEGIN
+    depts(1) := 'Cardiology';
+    depts(2) := 'Neurology';
+    DBMS_OUTPUT.PUT_LINE('Department 1: ' || depts(1));
+END;
+/
+
+-- 44. Run a basic LOOP with EXIT WHEN condition in PL/SQL
+DECLARE
+    i NUMBER := 1;
+BEGIN
+    LOOP
+        DBMS_OUTPUT.PUT_LINE('Count: ' || i);
+        i := i + 1;
+        EXIT WHEN i > 3;
+    END LOOP;
+END;
+/
+
+-- 45. Run a WHILE loop in PL/SQL
+DECLARE
+    i NUMBER := 1;
+BEGIN
+    WHILE i <= 3 LOOP
+        DBMS_OUTPUT.PUT_LINE('Iteration: ' || i);
+        i := i + 1;
+    END LOOP;
+END;
+/
+
+-- 46. Run a numeric FOR loop in PL/SQL
+BEGIN
+    FOR i IN 1..3 LOOP
+        DBMS_OUTPUT.PUT_LINE('For Loop Count: ' || i);
+    END LOOP;
+END;
+/
+
+-- 47. Fetch multiple rows using an explicit CURSOR in PL/SQL
+DECLARE
+    CURSOR c_doctor IS 
+        SELECT doc_name, salary FROM Doctor;
+    v_name Doctor.doc_name%TYPE;
+    v_sal  Doctor.salary%TYPE;
+BEGIN
+    OPEN c_doctor;
+    LOOP
+        FETCH c_doctor INTO v_name, v_sal;
+        EXIT WHEN c_doctor%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('Doctor Name: ' || v_name || ' | Salary: ' || v_sal);
+    END LOOP;
+    CLOSE c_doctor;
+END;
+/
+
+-- 48. Catch divide-by-zero error using ZERO_DIVIDE exception
+DECLARE
+    num NUMBER;
+BEGIN
+    num := 100 / 0;
+EXCEPTION
+    WHEN ZERO_DIVIDE THEN
+        DBMS_OUTPUT.PUT_LINE('Error: Cannot divide by zero!');
+END;
+/
+
+-- 49. Catch runtime errors using WHEN OTHERS exception
+DECLARE
+    v_name VARCHAR2(5);
+BEGIN
+    v_name := 'Doctor Name Over Limit';
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('An error occurred during execution!');
+END;
+/
+
+-- 50. Create a reusable Stored Procedure
+CREATE OR REPLACE PROCEDURE Welcome_Hospital IS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Hospital Database Connected!');
+END;
+/
+
+-- 51. Run (execute) the Stored Procedure
+BEGIN
+    Welcome_Hospital;
+END;
+/
+
+-- 52. Create a reusable PL/SQL Function and run it inside a SELECT query
+CREATE OR REPLACE FUNCTION Get_Annual_Salary (p_sal NUMBER)
+RETURN NUMBER IS
+BEGIN
+    RETURN p_sal * 12;
+END;
+/
+
+SELECT doc_name, salary, Get_Annual_Salary(salary) AS annual_salary FROM Doctor; 

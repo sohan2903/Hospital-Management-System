@@ -1,0 +1,43 @@
+-- Department Data
+INSERT INTO Department VALUES (1, 'Cardiology', 'Building A', 'Dhaka', 'cardio@hospital.com', 101);
+INSERT INTO Department VALUES (2, 'Neurology', 'Building B', 'Chittagong', 'neuro@hospital.com', 103);
+INSERT INTO Department VALUES (3, 'Orthopedics', 'Building C', 'Dhaka', 'ortho@hospital.com', 104);
+INSERT INTO Department VALUES (4, 'Pediatrics', 'Building A', 'Khulna', 'pedia@hospital.com', 105);
+
+-- Doctor Data
+INSERT INTO Doctor VALUES (101, 'Dr. Shohan', 85000.00, 1);
+INSERT INTO Doctor VALUES (102, 'Dr. Amit', 62000.00, 1);
+INSERT INTO Doctor VALUES (103, 'Dr. Vijay', 75000.00, 2);
+INSERT INTO Doctor VALUES (104, 'Dr. Sunita', 50000.00, 3);
+INSERT INTO Doctor VALUES (105, 'Dr. Anil', 45000.00, 4);
+
+-- Room Data
+INSERT INTO ROOM VALUES (201, '101A', 'ICU', 2, 1);
+INSERT INTO ROOM VALUES (202, '102B', 'General', 4, 1);
+INSERT INTO ROOM VALUES (203, '201A', 'Cabin', 1, 2);
+INSERT INTO ROOM VALUES (204, '301C', 'General', 6, 3);
+
+-- Patient Data
+INSERT INTO Patient VALUES (1, 'Aarti', 'aarti@mail.com', 25, 1, 201);
+INSERT INTO Patient VALUES (2, 'Rohan', 'rohan@mail.com', 45, 1, 202);
+INSERT INTO Patient VALUES (3, 'Karan', 'karan@mail.com', 30, 2, 203);
+INSERT INTO Patient VALUES (4, 'Neha', 'neha@mail.com', 12, 4, NULL);
+INSERT INTO Patient VALUES (5, 'Tarun', 'tarun@mail.com', 60, 3, 204);
+
+-- Archived Patient Data
+INSERT INTO Archived_Patient VALUES (1, 'Aarti', 'aarti@mail.com', 25, 1, 201);
+INSERT INTO Archived_Patient VALUES (6, 'Sanjay', 'sanjay@mail.com', 50, 1, NULL);
+
+-- Appointment Data
+INSERT INTO Appointment VALUES (501, TO_DATE('2026-03-01', 'YYYY-MM-DD'), '10:00 AM', 1000.00, 1, 101);
+INSERT INTO Appointment VALUES (502, TO_DATE('2026-03-02', 'YYYY-MM-DD'), '11:30 AM', 1200.00, 2, 101);
+INSERT INTO Appointment VALUES (503, TO_DATE('2026-03-03', 'YYYY-MM-DD'), '02:00 PM', 800.00, 3, 103);
+
+-- Medical Service Data
+INSERT INTO Medical_Service VALUES (301, 'ECG01', 'ECG Test', 1500.00, 1, 201);
+INSERT INTO Medical_Service VALUES (302, 'MRI01', 'Brain MRI', 8000.00, 2, 203);
+INSERT INTO Medical_Service VALUES (303, 'XRAY01', 'Chest X-Ray', 1000.00, 3, 204);
+
+-- DocServi Data
+INSERT INTO DocServi VALUES (101, 301, 'Active', TO_DATE('2026-01-01', 'YYYY-MM-DD'));
+INSERT INTO DocServi VALUES (103, 302, 'Active', TO_DATE('2026-01-10', 'YYYY-MM-DD'));

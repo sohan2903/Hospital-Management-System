@@ -1,0 +1,145 @@
+-- 1. Select all columns and rows from Department table
+SELECT * FROM Department;
+
+-- 2. Select data using exact match condition in WHERE clause
+SELECT * FROM Department WHERE dept_id = 1;
+
+-- 3. Filter rows using NOT operator
+SELECT * FROM Doctor WHERE NOT salary > 60000;
+
+-- 4. Filter rows using AND operator
+SELECT * FROM Doctor WHERE salary > 60000 AND dept_id = 1;
+
+-- 5. Filter rows using OR operator
+SELECT * FROM Doctor WHERE salary > 70000 OR dept_id = 3;
+
+-- 6. Combine AND and OR operators in WHERE clause
+SELECT * FROM Patient WHERE age > 20 AND (dept_id = 1 OR dept_id = 2);
+
+-- 7. Find doctor names starting with letter 'A'
+SELECT * FROM Doctor WHERE doc_name LIKE 'A%';
+
+-- 8. Find doctor names containing letter 'i'
+SELECT * FROM Doctor WHERE doc_name LIKE '%i%';
+
+-- 9. Find doctor names where second letter is 'r'
+SELECT * FROM Doctor WHERE doc_name LIKE '_r%';
+
+-- 10. Find patient names with exactly 5 letters
+SELECT * FROM Patient WHERE patient_name LIKE '_____';
+
+-- 11. Select rows where department ID matches a list using IN operator
+SELECT * FROM Doctor WHERE dept_id IN (1, 2);
+
+-- 12. Select patients who are NOT IN appointment table
+SELECT * FROM Patient WHERE patient_id NOT IN (SELECT patient_id FROM Appointment);
+
+-- 13. Find doctors earning more than SOME doctors in department 1
+SELECT * FROM Doctor WHERE salary > SOME (SELECT salary FROM Doctor WHERE dept_id = 1);
+
+-- 14. Find doctors earning more than ALL doctors in department 3
+SELECT * FROM Doctor WHERE salary > ALL (SELECT salary FROM Doctor WHERE dept_id = 3);
+
+-- 15. Select patient names that exist in Appointment table
+SELECT patient_name FROM Patient p WHERE EXISTS (
+    SELECT 1 FROM Appointment a WHERE p.patient_id = a.patient_id
+);
+
+-- 16. Select doctor names that do NOT exist in Appointment table
+SELECT doc_name FROM Doctor d WHERE NOT EXISTS (
+    SELECT 1 FROM Appointment a WHERE d.doc_id = a.doc_id
+);
+
+-- 17. Find patients with unique appointment records
+SELECT * FROM Patient 
+WHERE patient_id IN (
+    SELECT patient_id 
+    FROM Appointment 
+    GROUP BY patient_id 
+    HAVING COUNT(app_id) = 1
+);
+
+-- 18. Combine patient names from two tables without duplicates using UNION
+SELECT patient_name FROM Patient 
+UNION 
+SELECT patient_name FROM Archived_Patient;
+
+-- 19. Combine patient names from two tables with duplicates using UNION ALL
+SELECT patient_name FROM Patient 
+UNION ALL 
+SELECT patient_name FROM Archived_Patient;
+
+-- 20. Find common patient names from two tables using INTERSECT
+SELECT patient_name FROM Patient 
+INTERSECT 
+SELECT patient_name FROM Archived_Patient;
+
+-- 21. Find patients in first table but not in second table using MINUS
+SELECT patient_name FROM Patient 
+MINUS 
+SELECT patient_name FROM Archived_Patient;
+
+-- 22. Join Patient, Doctor, and Appointment tables using INNER JOIN
+SELECT p.patient_name, d.doc_name, a.fee, a.app_date
+FROM Patient p
+INNER JOIN Appointment a ON p.patient_id = a.patient_id
+INNER JOIN Doctor d ON a.doc_id = d.doc_id;
+
+-- 23. Show all patients and their appointments using LEFT JOIN
+SELECT p.patient_name, a.app_id, a.app_date
+FROM Patient p 
+LEFT JOIN Appointment a ON p.patient_id = a.patient_id;
+
+-- 24. Show all doctors and appointments using RIGHT JOIN
+SELECT d.doc_name, a.app_id 
+FROM Appointment a 
+RIGHT JOIN Doctor d ON d.doc_id = a.doc_id;
+
+-- 25. Show all patients and departments using FULL JOIN
+SELECT p.patient_name, dept.dept_name 
+FROM Patient p 
+FULL JOIN Department dept ON p.dept_id = dept.dept_id;
+
+-- 26. Count total number of patients
+SELECT COUNT(*) AS total_patients FROM Patient;
+
+-- 27. Calculate total salary of all doctors
+SELECT SUM(salary) AS total_salary FROM Doctor;
+
+-- 28. Calculate average salary of doctors
+SELECT AVG(salary) AS avg_salary FROM Doctor;
+
+-- 29. Find maximum salary among doctors
+SELECT MAX(salary) AS max_salary FROM Doctor;
+
+-- 30. Find minimum age among patients
+SELECT MIN(age) AS min_age FROM Patient;
+
+-- 31. Calculate average salary grouped by department ID
+SELECT dept_id, AVG(salary) FROM Doctor GROUP BY dept_id;
+
+-- 32. Filter departments with average salary over 50000 using HAVING
+SELECT dept_id, AVG(salary) 
+FROM Doctor 
+GROUP BY dept_id 
+HAVING AVG(salary) > 50000;
+
+-- 33. Count total doctors in each department using JOIN and GROUP BY
+SELECT d.dept_name, COUNT(doc.doc_id) AS total_docs
+FROM Department d
+LEFT JOIN Doctor doc ON d.dept_id = doc.dept_id
+GROUP BY d.dept_name;
+
+-- 34. Create a View for doctors with high salary
+CREATE VIEW High_Salary_Doctors AS
+SELECT doc_name, salary FROM Doctor WHERE salary > 60000;
+
+-- 35. Select data from a View
+SELECT * FROM High_Salary_Doctors;
+
+-- 36. Create a View showing total patients in each department
+CREATE VIEW Dept_Patient_Count AS
+SELECT d.dept_name, COUNT(p.patient_id) AS total_patients
+FROM Department d
+LEFT JOIN Patient p ON d.dept_id = p.dept_id
+GROUP BY d.dept_name;
